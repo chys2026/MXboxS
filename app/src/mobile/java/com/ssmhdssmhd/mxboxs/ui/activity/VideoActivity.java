@@ -616,6 +616,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
             @Override
             public void onDanmakuLoaded(java.util.List<DanmakuEngine.DanmakuItem> items) {
                 App.post(() -> {
+                    if (mBinding.danmakuView == null) return;
                     DanmakuEngine engine = mBinding.danmakuView.getEngine();
                     engine.clearItems();
                     for (DanmakuEngine.DanmakuItem item : items) {
@@ -1004,6 +1005,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private void onDanmakuShow() {
         DanmakuSetting.putShow(!DanmakuSetting.isShow());
         checkDanmakuImg();
+        if (mBinding.danmakuView == null) return;
         mBinding.danmakuView.setDanmakuEnabled(DanmakuSetting.isShow());
     }
 
@@ -1307,6 +1309,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     }
 
     private void initDanmaku() {
+        if (mBinding.danmakuView == null) return;
         DanmakuEngine engine = mBinding.danmakuView.getEngine();
         engine.setVisible(DanmakuSetting.isShow());
         engine.setScrollAreaRatio(DanmakuSetting.getScrollAreaRatio());
@@ -1483,7 +1486,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mVod.onTimeChanged(time, position, duration);
         mBinding.control.currentTime.setText(player().getPositionTime(0));
         mBinding.control.durationTime.setText(player().getDurationTime());
-        if (mBinding.danmakuView.getEngine().isVisible()) {
+        if (mBinding.danmakuView != null && mBinding.danmakuView.getEngine().isVisible()) {
             mBinding.danmakuView.updateDanmaku(position, duration);
         }
     }
@@ -1663,7 +1666,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.widget.time.setText(player().getPositionTime(time));
         mBinding.widget.seek.setVisibility(View.VISIBLE);
         hideProgress();
-        if (mBinding.danmakuView.getEngine().isVisible()) {
+        if (mBinding.danmakuView != null && mBinding.danmakuView.getEngine().isVisible()) {
             mBinding.danmakuView.seekTo(player().getPosition() + time);
         }
     }
@@ -1672,7 +1675,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     public void onSeekEnd(long time) {
         seekTo(time);
         mBinding.widget.framePreview.setVisibility(View.GONE);
-        if (mBinding.danmakuView.getEngine().isVisible()) {
+        if (mBinding.danmakuView != null && mBinding.danmakuView.getEngine().isVisible()) {
             mBinding.danmakuView.seekTo(time);
         }
     }
