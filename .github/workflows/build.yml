@@ -92,7 +92,7 @@ jobs:
           df -h .
           true
 
-      # ============ 仅保留 4 个 FULL 完整包（后续版本固定此方案，不再构建 SLIM 轻量包） ============
+      # ============ 仅构建 2 个手机版 FULL 包（不再构建 leanback 电视版 / SLIM 轻量包） ============
 
       - name: Build Mobile arm64-v8a (Phone)
         run: |
@@ -104,18 +104,6 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew assembleMobileFullArmeabi_v7aRelease --stacktrace --no-daemon 2>&1 | tee build-mobile-armeabi.log
-          find app/build/outputs -name "*.apk" -ls 2>/dev/null || true
-
-      - name: Build Leanback arm64-v8a (Android TV)
-        run: |
-          set -o pipefail
-          ./gradlew assembleLeanbackFullArm64_v8aRelease --stacktrace --no-daemon 2>&1 | tee build-leanback-arm64.log
-          find app/build/outputs -name "*.apk" -ls 2>/dev/null || true
-
-      - name: Build Leanback armeabi-v7a (Android TV)
-        run: |
-          set -o pipefail
-          ./gradlew assembleLeanbackFullArmeabi_v7aRelease --stacktrace --no-daemon 2>&1 | tee build-leanback-armeabi.log
           find app/build/outputs -name "*.apk" -ls 2>/dev/null || true
 
       - name: Upload Build Logs
@@ -206,8 +194,6 @@ jobs:
           |------|------|--------|
           | 手机版 (mobile) | arm64-v8a | MXboxS-mobile-arm64_v8a-${VERSION_NAME}.apk |
           | 手机版 (mobile) | armeabi-v7a | MXboxS-mobile-armeabi_v7a-${VERSION_NAME}.apk |
-          | 电视版 (leanback) | arm64-v8a | MXboxS-leanback-arm64_v8a-${VERSION_NAME}.apk |
-          | 电视版 (leanback) | armeabi-v7a | MXboxS-leanback-armeabi_v7a-${VERSION_NAME}.apk |
           EOF
           )
 
@@ -216,7 +202,7 @@ jobs:
             --title "MXboxS v${VERSION_NAME} (build ${COMMIT_SHA})" \
             --notes "${NOTES}" \
             ${RELEASE_FILES}
-          echo "✅ Release MXboxS-latest (v${VERSION_NAME}-${COMMIT_SHA}) 已创建（4×APK FULL）"
+          echo "✅ Release MXboxS-latest (v${VERSION_NAME}-${COMMIT_SHA}) 已创建（2×手机版 APK FULL）"
 
       - name: Create Tag Release
         # 打 v* tag 触发正式 Release
