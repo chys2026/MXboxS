@@ -408,4 +408,13 @@
     </string-array>
 
     <string name="home_cast">Cast</string>
+
+    <!-- 首页按钮字符串（供 HomeButton.java 共享模块引用） -->
+    <string name="home_vod">Vod</string>
+    <string name="home_live">Live</string>
+    <string name="home_search">Search</string>
+    <string name="home_keep">Keep</string>
+    <string name="home_push">Push</string>
+    <string name="home_setting">Setting</string>
+    <string name="home_history">History</string>
 </resources>
