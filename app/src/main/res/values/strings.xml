@@ -407,4 +407,5 @@
         <item>480P</item>
     </string-array>
 
+    <string name="home_cast">Cast</string>
 </resources>
