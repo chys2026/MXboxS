@@ -317,6 +317,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
             public void onOrientationChanged(int orientation) {
                 if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) return;
                 if (mUserLock) return; // 用户手动锁定后不再自动旋转
+                if (player() == null) return; // 播放器未初始化完成，避免 NPE
                 // Land: [0°,45°] or [315°,360°]
                 boolean isLand = orientation < 45 || orientation > 315;
                 if (isLand && !isFullscreen() && player().isLandscape()) {
