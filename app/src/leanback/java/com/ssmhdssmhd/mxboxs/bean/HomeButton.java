@@ -40,6 +40,14 @@ public class HomeButton implements Diffable<HomeButton> {
         return parse(Prefers.getString(KEY_BUTTON, ALL));
     }
 
+    /** 判断某个 HomeButton id 是否在当前配置中启用。 */
+    public static boolean isEnabled(int id) {
+        for (HomeButton button : getButtons()) {
+            if (button.getId() == id) return true;
+        }
+        return false;
+    }
+
     public static Map<Integer, HomeButton> getMap(List<HomeButton> list) {
         Map<Integer, HomeButton> map = new LinkedHashMap<>();
         for (HomeButton button : list) map.put(button.getId(), button);

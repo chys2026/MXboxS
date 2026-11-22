@@ -24,6 +24,7 @@ import com.ssmhdssmhd.mxboxs.api.config.LiveConfig;
 import com.ssmhdssmhd.mxboxs.api.config.VodConfig;
 import com.ssmhdssmhd.mxboxs.api.config.WallConfig;
 import com.ssmhdssmhd.mxboxs.bean.Config;
+import com.ssmhdssmhd.mxboxs.bean.HomeButton;
 import com.ssmhdssmhd.mxboxs.databinding.ActivityHomeBinding;
 import com.ssmhdssmhd.mxboxs.db.AppDatabase;
 import com.ssmhdssmhd.mxboxs.event.ConfigEvent;
@@ -206,7 +207,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     private void setNavigation() {
         mBinding.navigation.getMenu().findItem(R.id.vod).setVisible(true);
         mBinding.navigation.getMenu().findItem(R.id.setting).setVisible(true);
-        mBinding.navigation.getMenu().findItem(R.id.live).setVisible(LiveConfig.hasUrl());
+        // live 项同时受 HomeButton 配置（id=1）与直播源可用性双重控制
+        mBinding.navigation.getMenu().findItem(R.id.live).setVisible(HomeButton.isEnabled(1) && LiveConfig.hasUrl());
     }
 
     private boolean openLive() {
