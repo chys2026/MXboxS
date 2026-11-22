@@ -51,11 +51,12 @@ import com.ssmhdssmhd.mxboxs.utils.UrlUtil;
 import com.ssmhdssmhd.mxboxs.utils.Util;
 import com.github.catvod.net.OkHttp;
 import com.google.android.material.navigation.NavigationBarView;
+import com.ssmhdssmhd.mxboxs.ui.dialog.HomeMenuDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class HomeActivity extends BaseActivity implements NavigationBarView.OnItemSelectedListener {
+public class HomeActivity extends BaseActivity implements NavigationBarView.OnItemSelectedListener, HomeMenuDialog.Listener {
 
     private FragmentStateManager mManager;
     private ActivityHomeBinding mBinding;
@@ -285,6 +286,38 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         } else if (mManager.canBack(0)) {
             if (PlaybackService.isRunning()) Util.moveToBackground(this);
             else super.onBackInvoked();
+        }
+    }
+
+    /**
+     * 手机版本按「菜单」键时弹出首页功能选项弹窗。
+     */
+    @Override
+    public boolean dispatchKeyEvent(android.view.KeyEvent event) {
+        if (event.getAction() == android.view.KeyEvent.ACTION_UP && event.getKeyCode() == android.view.KeyEvent.KEYCODE_MENU) {
+            onHomeMenuKey();
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    private void onHomeMenuKey() {
+        HomeMenuDialog.create().show(this);
+    }
+
+    /**
+     * 首页菜单键选项弹窗被选中某一项时的回调，index 对应 select_home_menu_key 的下标（1..N）。
+     */
+    @Override
+    public void onHomeMenuItem(int index) {
+        switch (index) {
+            case 1: VodFragment.newInstance(); break; // 实际跳转逻辑需根据具体需求实现
+            case 2: LiveActivity.start(this); break;
+            case 3: SearchActivity.start(this, ""); break;
+            case 4: KeepActivity.start(this); break;
+            case 5: PushActivity.start(this); break;
+            case 6: HistoryActivity.start(this); break;
+            case 7: SettingActivity.start(this); break;
         }
     }
 
