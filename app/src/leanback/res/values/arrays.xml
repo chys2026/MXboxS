@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 首页菜单项：第 0 项为「选项弹窗」自身占位（不会出现在菜单里），1-8 对应 HomeButton ID -->
+    <string-array name="select_home_menu_key">
+        <item></item>
+        <item>@string/home_vod</item>
+        <item>@string/home_live</item>
+        <item>@string/home_search</item>
+        <item>@string/home_keep</item>
+        <item>@string/home_push</item>
+        <item>@string/home_cast</item>
+        <item>@string/home_history</item>
+        <item>@string/home_setting</item>
+    </string-array>
+</resources>
