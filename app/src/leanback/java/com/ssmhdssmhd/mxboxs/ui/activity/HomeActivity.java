@@ -499,9 +499,16 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (KeyUtil.isMenuKey(event)) showDialog();
+        if (KeyUtil.isMenuKey(event)) { onHomeMenuKey(); return true; }
         if (KeyUtil.isActionDown(event) & KeyUtil.isDownKey(event) && getCurrentFocus() == mBinding.title) return mBinding.recycler.getChildAt(0).requestFocus();
         return super.dispatchKeyEvent(event);
+    }
+
+    /**
+     * 按下遥控器「菜单」键时，优先弹出首页功能选项弹窗；如果用户没有保存过配置（全部默认开启），则直接执行 HomeButton.getButtons() 的第一个按钮动作。
+     */
+    private void onHomeMenuKey() {
+        HomeMenuDialog.create().show(this);
     }
 
     @Override
