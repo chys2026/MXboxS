@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Material 3 风格首页功能弹窗（圆角卡片 + 阴影） -->
 <com.ssmhdssmhd.mxboxs.ui.custom.CustomRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/recycler"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_item_round_normal"
+    android:background="@drawable/md3_card_background"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:overScrollMode="never"

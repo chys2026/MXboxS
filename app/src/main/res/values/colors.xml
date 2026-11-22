@@ -28,4 +28,29 @@
     <color name="white_90">#E6FFFFFF</color>
 
   <color name="yellow_500">#FFD700</color>
+
+  <!-- ===== Material 3 Dark Color System (借鉴 AVBox 深色主题风格) ===== -->
+  <color name="md_primary">#9ea7ff</color>
+  <color name="md_onPrimary">#00135c</color>
+  <color name="md_primaryContainer">#1f2970</color>
+  <color name="md_onPrimaryContainer">#dce1ff</color>
+  <color name="md_secondary">#bfc6f7</color>
+  <color name="md_onSecondary">#2a305c</color>
+  <color name="md_secondaryContainer">#414876</color>
+  <color name="md_onSecondaryContainer">#dce1ff</color>
+  <color name="md_tertiary">#eebece</color>
+  <color name="md_onTertiary">#412733</color>
+  <color name="md_tertiaryContainer">#593c4a</color>
+  <color name="md_surface">#0e0e12</color>
+  <color name="md_surfaceVariant">#46464f</color>
+  <color name="md_onSurface">#e2e1e6</color>
+  <color name="md_onSurfaceVariant">#c7c6d0</color>
+  <color name="md_background">#0e0e12</color>
+  <color name="md_error">#ffb4a9</color>
+  <color name="md_outline">#90909a</color>
+  <color name="md_inverseSurface">#e2e1e6</color>
+  <color name="md_inverseOnSurface">#27262b</color>
+  <color name="md_scrim">#000000</color>
+
+</resources>
 </resources>
