@@ -2,6 +2,7 @@ package com.ssmhdssmhd.mxboxs.bean;
 
 import androidx.annotation.Nullable;
 
+import com.ssmhdssmhd.mxboxs.R;
 import com.ssmhdssmhd.mxboxs.impl.Diffable;
 import com.ssmhdssmhd.mxboxs.utils.ResUtil;
 import com.github.catvod.utils.Prefers;
