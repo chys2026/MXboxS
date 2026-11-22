@@ -311,13 +311,14 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     @Override
     public void onHomeMenuItem(int index) {
         switch (index) {
-            case 1: change(0); break; // Vod
-            case 2: openLive(); break; // Live
+            case 1: change(0); break;                    // Vod
+            case 2: openLive(); break;                    // Live
             case 3: SearchActivity.start(this, ""); break; // Search
-            case 4: KeepActivity.start(this); break; // Keep
-            case 5: break; // Push (mobile 无独立 PushActivity，忽略)
-            case 6: HistoryActivity.start(this); break; // History
-            case 7: change(1); break; // Setting (mobile 走 SettingFragment tab)
+            case 4: KeepActivity.start(this); break;       // Keep
+            case 5: break;                                 // Push (mobile 无独立入口，忽略)
+            case 6: openLive(); break;                     // Cast → 复用 live 播放入口
+            case 7: HistoryActivity.start(this); break;     // History
+            case 8: change(1); break;                      // Setting
         }
     }
 
