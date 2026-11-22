@@ -1,0 +1,55 @@
+<resources>
+
+    <color name="transparent">#00000000</color>
+    <color name="black">#000000</color>
+    <color name="black_05">#0D000000</color>
+    <color name="black_10">#1A000000</color>
+    <color name="black_15">#26000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_30">#4D000000</color>
+    <color name="black_40">#66000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_70">#B3000000</color>
+    <color name="black_80">#CC000000</color>
+    <color name="black_90">#E6000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_05">#0DFFFFFF</color>
+    <color name="red">#FFFF3B30</color>
+    <color name="white_15">#26FFFFFF</color>
+    <color name="white_10">#1AFFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_30">#4DFFFFFF</color>
+    <color name="white_40">#66FFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="white_60">#99FFFFFF</color>
+    <color name="white_70">#B3FFFFFF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="white_90">#E6FFFFFF</color>
+
+  <color name="yellow_500">#FFD700</color>
+
+  <!-- ===== Material 3 Dark Color System (借鉴 AVBox 深色主题风格) ===== -->
+  <color name="md_primary">#9ea7ff</color>
+  <color name="md_onPrimary">#00135c</color>
+  <color name="md_primaryContainer">#1f2970</color>
+  <color name="md_onPrimaryContainer">#dce1ff</color>
+  <color name="md_secondary">#bfc6f7</color>
+  <color name="md_onSecondary">#2a305c</color>
+  <color name="md_secondaryContainer">#414876</color>
+  <color name="md_onSecondaryContainer">#dce1ff</color>
+  <color name="md_tertiary">#eebece</color>
+  <color name="md_onTertiary">#412733</color>
+  <color name="md_tertiaryContainer">#593c4a</color>
+  <color name="md_surface">#0e0e12</color>
+  <color name="md_surfaceVariant">#46464f</color>
+  <color name="md_onSurface">#e2e1e6</color>
+  <color name="md_onSurfaceVariant">#c7c6d0</color>
+  <color name="md_background">#0e0e12</color>
+  <color name="md_error">#ffb4a9</color>
+  <color name="md_outline">#90909a</color>
+  <color name="md_inverseSurface">#e2e1e6</color>
+  <color name="md_inverseOnSurface">#27262b</color>
+  <color name="md_scrim">#000000</color>
+
+</resources>

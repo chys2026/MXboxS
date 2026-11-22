@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Material 3 默认态圆角容器（用于功能项/按钮组） -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#25232a" />
+    <corners android:radius="12dp" />
+</shape>

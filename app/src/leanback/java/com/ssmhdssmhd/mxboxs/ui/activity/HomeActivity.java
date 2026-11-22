@@ -32,6 +32,7 @@ import com.ssmhdssmhd.mxboxs.bean.Cache;
 import com.ssmhdssmhd.mxboxs.bean.Config;
 import com.ssmhdssmhd.mxboxs.bean.Func;
 import com.ssmhdssmhd.mxboxs.bean.History;
+import com.ssmhdssmhd.mxboxs.bean.HomeButton;
 import com.ssmhdssmhd.mxboxs.bean.Result;
 import com.ssmhdssmhd.mxboxs.bean.Site;
 import com.ssmhdssmhd.mxboxs.bean.Style;
@@ -53,6 +54,7 @@ import com.ssmhdssmhd.mxboxs.ui.base.BaseActivity;
 import com.ssmhdssmhd.mxboxs.ui.custom.CustomRowPresenter;
 import com.ssmhdssmhd.mxboxs.ui.custom.CustomSelector;
 import com.ssmhdssmhd.mxboxs.ui.custom.CustomTitleView;
+import com.ssmhdssmhd.mxboxs.ui.dialog.HomeMenuDialog;
 import com.ssmhdssmhd.mxboxs.ui.dialog.SiteDialog;
 import com.ssmhdssmhd.mxboxs.ui.presenter.FuncPresenter;
 import com.ssmhdssmhd.mxboxs.ui.presenter.HeaderPresenter;
@@ -80,7 +82,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener {
+public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener, HomeMenuDialog.Listener {
 
     private ActivityHomeBinding mBinding;
     private ArrayObjectAdapter mHistoryAdapter;
@@ -293,12 +295,10 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private void setFunc() {
         List<Func> items = new ArrayList<>();
-        items.add(Func.create(R.string.home_vod));
-        if (LiveConfig.hasUrl()) items.add(Func.create(R.string.home_live));
-        items.add(Func.create(R.string.home_search));
-        items.add(Func.create(R.string.home_keep));
-        items.add(Func.create(R.string.home_push));
-        items.add(Func.create(R.string.home_setting));
+        for (HomeButton button : HomeButton.getButtons()) {
+            if (button.getId() == 1 && !LiveConfig.hasUrl()) continue;
+            items.add(Func.create(button.getResId()));
+        }
         mFuncAdapter.setItems(items, new BaseDiffCallback<Func>());
     }
 
@@ -412,12 +412,40 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public void onItemClick(Func item) {
-        if (item.getResId() == R.string.home_vod) VodActivity.start(this, mResult);
-        else if (item.getResId() == R.string.home_live) LiveActivity.start(this);
-        else if (item.getResId() == R.string.home_keep) KeepActivity.start(this);
-        else if (item.getResId() == R.string.home_push) PushActivity.start(this);
-        else if (item.getResId() == R.string.home_search) SearchActivity.start(this);
-        else if (item.getResId() == R.string.home_setting) SettingActivity.start(this);
+        int resId = item.getResId();
+        if (resId == R.string.home_vod) VodActivity.start(this, mResult);
+        else if (resId == R.string.home_live) LiveActivity.start(this);
+        else if (resId == R.string.home_keep) KeepActivity.start(this);
+        else if (resId == R.string.home_push) PushActivity.start(this);
+        else if (resId == R.string.home_search) SearchActivity.start(this);
+        else if (resId == R.string.home_cast) {
+                History last = History.get().isEmpty() ? null : History.get().get(0);
+                if (last != null) VideoActivity.cast(this, last);
+            }
+        else if (resId == R.string.home_history) mPresenter.switchToHistoryRow();
+        else if (resId == R.string.home_recommend) SearchActivity.startRecommend(this);
+        else if (resId == R.string.home_setting) SettingActivity.start(this);
+    }
+
+    /**
+     * 首页菜单键的「选项弹窗」被选中某一项时的回调，index 对应 select_home_menu_key 的下标（1..N）。
+     */
+    @Override
+    public void onHomeMenuItem(int index) {
+        switch (index) {
+            case 1: VodActivity.start(this, mResult); break;
+            case 2: LiveActivity.start(this); break;
+            case 3: SearchActivity.start(this); break;
+            case 4: KeepActivity.start(this); break;
+            case 5: PushActivity.start(this); break;
+            case 6: {
+                History last = History.get().isEmpty() ? null : History.get().get(0);
+                if (last != null) VideoActivity.cast(this, last);
+                break;
+            }
+            case 7: getHistory(true); break;
+            case 8: SettingActivity.start(this); break;
+        }
     }
 
     @Override
@@ -471,9 +499,16 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (KeyUtil.isMenuKey(event)) showDialog();
+        if (KeyUtil.isMenuKey(event)) { onHomeMenuKey(); return true; }
         if (KeyUtil.isActionDown(event) & KeyUtil.isDownKey(event) && getCurrentFocus() == mBinding.title) return mBinding.recycler.getChildAt(0).requestFocus();
         return super.dispatchKeyEvent(event);
+    }
+
+    /**
+     * 按下遥控器「菜单」键时，优先弹出首页功能选项弹窗；如果用户没有保存过配置（全部默认开启），则直接执行 HomeButton.getButtons() 的第一个按钮动作。
+     */
+    private void onHomeMenuKey() {
+        HomeMenuDialog.create().show(this);
     }
 
     @Override

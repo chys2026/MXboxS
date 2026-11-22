@@ -106,6 +106,15 @@ jobs:
           ./gradlew assembleMobileFullArmeabi_v7aRelease --stacktrace --no-daemon 2>&1 | tee build-mobile-armeabi.log
           find app/build/outputs -name "*.apk" -ls 2>/dev/null || true
 
+      - name: Upload Mobile APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: mxboxs-apks
+          path: |
+            app/build/outputs/apk/**/*.apk
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Upload Build Logs
         if: always()
         continue-on-error: true

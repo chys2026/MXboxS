@@ -14,6 +14,8 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
+import android.hardware.SensorManager;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -137,6 +139,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private boolean fullscreen;
     private boolean useParse;
     private boolean rotate;
+    private boolean mUserLock;
+    private OrientationEventListener mOrientationListener;
     private Runnable mR1;
     private Runnable mR2;
     private Runnable mR3;
@@ -308,6 +312,21 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mR3 = this::setOrient;
         mR4 = this::showEmpty;
         mPiP = new PiP();
+        mOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_UI) {
+            @Override
+            public void onOrientationChanged(int orientation) {
+                if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) return;
+                if (mUserLock) return; // 用户手动锁定后不再自动旋转
+                if (player() == null) return; // 播放器未初始化完成，避免 NPE
+                // Land: [0°,45°] or [315°,360°]
+                boolean isLand = orientation < 45 || orientation > 315;
+                if (isLand && !isFullscreen() && player().isLandscape()) {
+                    enterFullscreen();
+                } else if (!isLand && isFullscreen() && player().isPortrait()) {
+                    exitFullscreen();
+                }
+            }
+        };
         checkDanmakuImg();
         initDanmaku();
         setRecyclerView();
@@ -970,6 +989,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void onLock() {
         setLock(!isLock());
+        mUserLock = isLock(); // 锁定后禁止自动旋转，解锁后恢复
         setRequestedOrientation(getLockOrient());
         mKeyDown.setLock(isLock());
         checkLockImg();
@@ -1125,6 +1145,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private void enterFullscreen() {
         if (isFullscreen()) return;
         setFullscreen(true);
+        mUserLock = false;
         if (isLand() && !player().isPortrait()) setTransition();
         mBinding.video.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         setRequestedOrientation(PlaybackOrientation.getEnterFullscreenOrientation(player().isPortrait()));
@@ -1139,6 +1160,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private void exitFullscreen() {
         if (!isFullscreen()) return;
         setFullscreen(false);
+        mUserLock = false;
         if (isLand() && !player().isPortrait()) setTransition();
         setRequestedOrientation(PlaybackOrientation.getExitFullscreenOrientation(isPort()));
         mBinding.episode.postDelayed(() -> mBinding.episode.scrollToPosition(mEpisodeAdapter.getPosition()), 100);
@@ -1819,10 +1841,12 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mClock.stop().start();
         setAudioOnly(false);
         setStop(false);
+        if (mOrientationListener != null) mOrientationListener.enable();
     }
 
     @Override
     protected void onStop() {
+        if (mOrientationListener != null) mOrientationListener.disable();
         super.onStop();
         if (PlayerSetting.isBackgroundOff()) mClock.stop();
         if (!isAudioOnly()) setStop(true);

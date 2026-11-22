@@ -24,6 +24,7 @@ import com.ssmhdssmhd.mxboxs.api.config.LiveConfig;
 import com.ssmhdssmhd.mxboxs.api.config.VodConfig;
 import com.ssmhdssmhd.mxboxs.api.config.WallConfig;
 import com.ssmhdssmhd.mxboxs.bean.Config;
+import com.ssmhdssmhd.mxboxs.bean.HomeButton;
 import com.ssmhdssmhd.mxboxs.databinding.ActivityHomeBinding;
 import com.ssmhdssmhd.mxboxs.db.AppDatabase;
 import com.ssmhdssmhd.mxboxs.event.ConfigEvent;
@@ -51,11 +52,12 @@ import com.ssmhdssmhd.mxboxs.utils.UrlUtil;
 import com.ssmhdssmhd.mxboxs.utils.Util;
 import com.github.catvod.net.OkHttp;
 import com.google.android.material.navigation.NavigationBarView;
+import com.ssmhdssmhd.mxboxs.ui.dialog.HomeMenuDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class HomeActivity extends BaseActivity implements NavigationBarView.OnItemSelectedListener {
+public class HomeActivity extends BaseActivity implements NavigationBarView.OnItemSelectedListener, HomeMenuDialog.Listener {
 
     private FragmentStateManager mManager;
     private ActivityHomeBinding mBinding;
@@ -123,6 +125,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             }
             orientation = getResources().getConfiguration().orientation;
             try { mBinding.navigation.setOnItemSelectedListener(this); } catch (Throwable ignored) {}
+            // 右上角「⋮」按钮 → 弹出首页功能选择弹窗
+            try { mBinding.homeMenuBtn.setOnClickListener(v -> HomeMenuDialog.create().show(HomeActivity.this)); } catch (Throwable ignored) {}
             try { PermissionUtil.requestNotify(this); } catch (Throwable ignored) {}
             try { initFragment(savedInstanceState); } catch (Throwable e) { android.util.Log.e("HomeActivity", "initFragment fail", e); }
             try { Updater.create().start(this); } catch (Throwable e) { android.util.Log.e("HomeActivity", "Updater.start fail", e); }
@@ -205,7 +209,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     private void setNavigation() {
         mBinding.navigation.getMenu().findItem(R.id.vod).setVisible(true);
         mBinding.navigation.getMenu().findItem(R.id.setting).setVisible(true);
-        mBinding.navigation.getMenu().findItem(R.id.live).setVisible(LiveConfig.hasUrl());
+        // live 项同时受 HomeButton 配置（id=1）与直播源可用性双重控制
+        mBinding.navigation.getMenu().findItem(R.id.live).setVisible(HomeButton.isEnabled(1) && LiveConfig.hasUrl());
     }
 
     private boolean openLive() {
@@ -285,6 +290,39 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         } else if (mManager.canBack(0)) {
             if (PlaybackService.isRunning()) Util.moveToBackground(this);
             else super.onBackInvoked();
+        }
+    }
+
+    /**
+     * 手机版本按「菜单」键时弹出首页功能选项弹窗。
+     */
+    @Override
+    public boolean dispatchKeyEvent(android.view.KeyEvent event) {
+        if (event.getAction() == android.view.KeyEvent.ACTION_UP && event.getKeyCode() == android.view.KeyEvent.KEYCODE_MENU) {
+            onHomeMenuKey();
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    private void onHomeMenuKey() {
+        HomeMenuDialog.create().show(this);
+    }
+
+    /**
+     * 首页菜单键选项弹窗被选中某一项时的回调，index 对应 select_home_menu_key 的下标（1..N）。
+     */
+    @Override
+    public void onHomeMenuItem(int index) {
+        switch (index) {
+            case 1: change(0); break;                    // Vod
+            case 2: openLive(); break;                    // Live
+            case 3: SearchActivity.start(this, ""); break; // Search
+            case 4: KeepActivity.start(this); break;       // Keep
+            case 5: break;                                 // Push (mobile 无独立入口，忽略)
+            case 6: openLive(); break;                     // Cast → 复用 live 播放入口
+            case 7: HistoryActivity.start(this); break;     // History
+            case 8: change(1); break;                      // Setting
         }
     }
 
