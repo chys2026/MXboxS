@@ -125,6 +125,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             }
             orientation = getResources().getConfiguration().orientation;
             try { mBinding.navigation.setOnItemSelectedListener(this); } catch (Throwable ignored) {}
+            // 右上角「⋮」按钮 → 弹出首页功能选择弹窗
+            try { mBinding.homeMenuBtn.setOnClickListener(v -> HomeMenuDialog.create().show(HomeActivity.this)); } catch (Throwable ignored) {}
             try { PermissionUtil.requestNotify(this); } catch (Throwable ignored) {}
             try { initFragment(savedInstanceState); } catch (Throwable e) { android.util.Log.e("HomeActivity", "initFragment fail", e); }
             try { Updater.create().start(this); } catch (Throwable e) { android.util.Log.e("HomeActivity", "Updater.start fail", e); }

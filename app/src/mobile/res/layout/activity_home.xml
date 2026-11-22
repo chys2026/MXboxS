@@ -11,6 +11,19 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/navigation" />
 
+    <!-- 首页功能菜单按钮：点击弹出 HomeMenuDialog -->
+    <ImageButton
+        android:id="@+id/home_menu_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/home_setting"
+        android:src="@drawable/ic_menu_more"
+        android:tint="@color/white" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
